@@ -12,7 +12,7 @@ In the `out` folder, you will find the test set that was generated.
 The test format is like this:
 ```
 123         ; number of nodes
-10         ; percentage of maximum number of edges (100 = complete graph)
+10          ; percentage of maximum number of edges (100 = complete graph)
 n           ; do you want negative cost edges (y / n)
 test1.in    ; output file name
 ```
