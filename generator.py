@@ -2,6 +2,7 @@ import random
 import numpy as np
 import sys
 from tqdm import tqdm
+import math
 
 output_dir = 'in/'
 max_cost = 10000
@@ -90,9 +91,56 @@ def generate_edges(graph: Graph):
 
         graph.edges.append(Edge(source, dest, cost))
 
+def bellmanFordAndFix(graph: Graph, src: int, dist):
+    V = graph.V
+    E = graph.E
+
+    dist = [math.inf] * (V + 1)
+    dist[src] = 0;
+
+    parent = [-1] * (V + 1)
+
+    for i in tqdm(range(1, V + 1)):
+        for j in range(E):
+            u = graph.edges[j].source
+            v = graph.edges[j].dest
+            weight = graph.edges[j].weight
+            if (dist[u] != math.inf and dist[u] + weight < dist[v]):
+                dist[v] = dist[u] + weight
+                parent[v] = u
+    
+    for i in range(E):
+        u = graph.edges[j].source
+        v = graph.edges[j].dest
+        weight = graph.edges[j].weight
+        if (dist[u] != math.inf and dist[u] + weight < dist[v]):
+            print("Negative cycle found. Fixing it...")
+            source = parent[v]
+            dest = v
+            for edge in graph.edges:
+                if edge.source == source and edge.dest == dest:
+                    edge.weight = 2147483647
+
+def fixAnyNegativeCycle(graph: Graph):
+    print("Fixing negative cycles")
+    
+    V = graph.V
+    visited = [False] * (V + 1)
+
+    dist = [None] * (V + 1)
+
+    for i in tqdm(range(1, graph.V + 1)):
+        if visited[i] == False:
+            bellmanFordAndFix(graph, i, dist)
+        
+        for j in range(1, graph.V + 1):
+            if dist[j] != math.inf:
+                visited[j] = True;
+
 
 graph = read_input_data()
 print("Generating: " + file_name)
 generate_edges(graph)
-# fix negative cycles
+if muchii_negative:
+    fixAnyNegativeCycle(graph)
 write_out_file(graph)
