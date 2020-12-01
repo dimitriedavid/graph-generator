@@ -7,8 +7,8 @@ generate: python_generator_dependecies $(INPUT_FILES)
 python_generator_dependecies:
 	@echo "Installing dependencies..."
 	@python3 -m pip install numpy tqdm
-	@rm -r -f in
-	@mkdir in
+	@rm -r -f out
+	@mkdir out
 
 $(INPUT_FILES):
 	@echo "\n==============="

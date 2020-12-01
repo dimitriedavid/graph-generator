@@ -4,7 +4,7 @@ import sys
 from tqdm import tqdm
 import math
 
-output_dir = 'in/'
+output_dir = 'out/'
 max_cost = 10000
 file_name = ''
 muchii_negative = True
