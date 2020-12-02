@@ -24,6 +24,11 @@ class Graph:
     def addEdge(self, edge: Edge):
         self.edges.append(edge)
 
+    def updateEdgeAbs(self, source, dest):
+        for edge in self.edges:
+                if edge.source == source and edge.dest == dest:
+                    edge.weight = abs(edge.weight)
+
 
 def read_input_data():
     global file_name, muchii_negative
@@ -101,7 +106,7 @@ def bellmanFordAndFix(graph: Graph, src: int, dist):
 
     parent = [-1] * (V + 1)
 
-    for i in tqdm(range(1, V + 1)):
+    for i in range(1, V + 1):
         for j in range(E):
             u = graph.edges[j].source
             v = graph.edges[j].dest
@@ -111,32 +116,44 @@ def bellmanFordAndFix(graph: Graph, src: int, dist):
                 parent[v] = u
     
     for i in range(E):
-        u = graph.edges[j].source
-        v = graph.edges[j].dest
-        weight = graph.edges[j].weight
+        u = graph.edges[i].source
+        v = graph.edges[i].dest
+        weight = graph.edges[i].weight
         if (dist[u] != math.inf and dist[u] + weight < dist[v]):
-            print("Negative cycle found. Fixing it...")
-            source = parent[v]
-            dest = v
-            for edge in graph.edges:
-                if edge.source == source and edge.dest == dest:
-                    edge.weight = 2147483647
+            # make sure we have at least one node from cycle
+            for i in range(V):
+                v = parent[v]
+
+            # iterate through cycle and update it
+            run = True
+            x = v
+            while run:
+                source = parent[x]
+                dest = x
+                graph.updateEdgeAbs(source, dest)
+                x = parent[x]
+                if x == v:
+                    run = False
+            return True
+    
+    return False
 
 def fixAnyNegativeCycle(graph: Graph):
-    print("Fixing negative cycles")
+    print("Fixing negative cycles. This might take a while...")
     
     V = graph.V
     visited = [False] * (V + 1)
 
     dist = [None] * (V + 1)
 
-    for i in tqdm(range(1, graph.V + 1)):
+    for i in range(1, graph.V + 1):
         if visited[i] == False:
-            bellmanFordAndFix(graph, i, dist)
+            while bellmanFordAndFix(graph, i, dist):
+                pass
         
-        for j in range(1, graph.V + 1):
-            if dist[j] != math.inf:
-                visited[j] = True;
+            for j in range(1, graph.V + 1):
+                if dist[j] != math.inf:
+                    visited[j] = True;
 
 
 graph = read_input_data()
