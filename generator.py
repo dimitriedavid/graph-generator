@@ -3,6 +3,7 @@ import numpy as np
 import sys
 from tqdm import tqdm
 import math
+import time
 
 output_dir = 'out/'
 max_cost = 1000
@@ -49,7 +50,7 @@ def read_input_data():
     if (nr_muchii > 1e6):
         nr_muchii = int(1e6)
 
-    if muchii_negative_str == 'n':
+    if muchii_negative_str.startswith('n'):
         muchii_negative = False
 
     return Graph(nr_noduri, nr_muchii)
@@ -139,8 +140,11 @@ def bellmanFordAndFix(graph: Graph, src: int, dist):
     return False
 
 def fixAnyNegativeCycle(graph: Graph):
-    print("Fixing negative cycles. This might take a while...")
+    def fixAnyNegativeCycle(graph: Graph):
+        print("Fixing negative cycles. This might take a while...")
     
+    start_time = time.time()
+
     V = graph.V
     visited = [False] * (V + 1)
 
@@ -154,6 +158,10 @@ def fixAnyNegativeCycle(graph: Graph):
             for j in range(1, graph.V + 1):
                 if dist[j] != math.inf:
                     visited[j] = True;
+
+    end_time = time.time()
+    dif = end_time - start_time
+    print("Elapsed time: " + str(dif) + " seconds")
 
 
 graph = read_input_data()
