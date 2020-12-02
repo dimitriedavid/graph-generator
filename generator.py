@@ -5,7 +5,7 @@ from tqdm import tqdm
 import math
 
 output_dir = 'out/'
-max_cost = 10000
+max_cost = 1000
 file_name = ''
 muchii_negative = True
 
@@ -57,6 +57,7 @@ def write_out_file(graph: Graph):
         f.write(str(edge.source) + ' ' + str(edge.dest) + ' ' + str(edge.weight) + '\n')
 
 def generate_edges(graph: Graph):
+    global muchii_negative
     maxed_sources = []
     source_dest_map = {}
 
@@ -84,9 +85,9 @@ def generate_edges(graph: Graph):
         if len(used_destinations) == (graph.V - 1):
             maxed_sources.append(source)
 
-        cost = int((np.random.normal(0, 2, 1)) * 100)
+        cost = int((np.random.normal(0, 2, 1)) * max_cost / 10)
 
-        if (muchii_negative == 'n'):
+        if (muchii_negative == False):
             cost = abs(cost)
 
         graph.edges.append(Edge(source, dest, cost))
